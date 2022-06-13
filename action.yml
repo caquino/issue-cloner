@@ -15,6 +15,9 @@ inputs:
     description: 'The label to be used on the cloned issue'
     default: ''
     required: false
+outputs:
+  cloned_issue_id:
+    description: 'The cloned issue id'
 runs:
   using: 'node12'
   main: 'index.js'
