@@ -64,7 +64,8 @@ async function cloneIssue(octokit, targetRepo, original, destinationLabel) {
     labels: [destinationLabel]
   });
 
-  core.setOutput('cloned_issue_id', result.number);
+  // set output to create issue number
+  core.setOutput('issueNumber', result.data.number);
 
   return result;
 }
