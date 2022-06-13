@@ -12,16 +12,20 @@ Clone an issue to a predefined repository when labeled with a specific label
 
 **Required** The repository in which to clone the issue.
 
-### `label`
+### `sourceLabel`
 
 **Optional** The label on which to react. Default `clone`.
+
+### `destinationLabel`
+**Optional** The label to be assigned to the cloned issue. Default is ``.
 
 ## Example usage
 
 ```yml
-uses: dpanayotov/issue-cloner@v0.2
+uses: caquino/issue-cloner@v0.3
 with:
-  label: "clone"
+  sourceLabel: "to_clone"
+  destinationLabel: "cloned"
   targetRepo: myorg/myrepo
   token: ${{ secrets.CLONE_ISSUE_TOKEN }}
 ```

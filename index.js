@@ -3,18 +3,19 @@ const github = require('@actions/github');;
 
 async function start(){
     try {
-        const label = core.getInput('label');
+        const sourceLabel = core.getInput('sourceLabel');
+        const destinationLabel = core.getInput('destinationLabel');
         const targetRepo = core.getInput('targetRepo', {required: true});
         const ghToken = core.getInput('token', {required: true});
 
         const octokit = new github.getOctokit(ghToken);
         const originalIssue = await getOriginalIssue(octokit);
 
-        if (!hasLabel(label, originalIssue)){
+        if (!hasLabel(sourceLabel, originalIssue)){
             console.log(`Label ${label} not present. Will not copy issue`)
             return;
         }
-        const clonedIssue = await cloneIssue(octokit, targetRepo, originalIssue)
+        const clonedIssue = await cloneIssue(octokit, targetRepo, originalIssue, destinationLabel)
         
         await addComment(octokit, originalIssue, clonedIssue)
         
@@ -41,7 +42,7 @@ async function getOriginalIssue(octokit) {
     return issue;
 }
 
-async function cloneIssue(octokit, targetRepo, original){
+async function cloneIssue(octokit, targetRepo, original, destinationLabel){
     const splitted = targetRepo.split('/');
     const owner = splitted[0];
     const repoName = splitted[1];
@@ -59,7 +60,8 @@ async function cloneIssue(octokit, targetRepo, original){
         owner: owner,
         repo: repoName,
         body: body,
-        title: title
+        title: title,
+        labels: [ destinationLabel ]
     });
     return result;
 }

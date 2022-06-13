@@ -7,9 +7,13 @@ inputs:
   targetRepo:
     description: 'The repository in which to copy the issue'
     required: true
-  label:
-    description: 'The label on which to act'
+  sourceLabel:
+    description: 'The source label on which to act'
     default: 'clone'
+    required: false
+  destinationLabel:
+    description: 'The label to be used on the cloned issue'
+    default: ''
     required: false
 runs:
   using: 'node12'
