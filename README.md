@@ -22,7 +22,7 @@ Clone an issue to a predefined repository when labeled with a specific label
 ## Example usage
 
 ```yml
-uses: caquino/issue-cloner@v0.3
+uses: caquino/issue-cloner@v0.4
 with:
   sourceLabel: "to_clone"
   destinationLabel: "cloned"
