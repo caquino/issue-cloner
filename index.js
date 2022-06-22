@@ -47,6 +47,11 @@ async function cloneIssue(octokit, targetRepo, original, destinationLabel) {
   const owner = splitted[0];
   const repoName = splitted[1];
 
+  if (await hasComment(octokit, original)) {
+    core.setFailed("Issue was already cloned. Skiping");
+    return;
+  }
+
   const issueRegex = /(?<=^|\s)#\d+(?=\s|$)/g; // #12 as a word in the text
   let body = original.data.body.replace(issueRegex, (match) => {
     const issueNumber = match.substr(1);
@@ -78,6 +83,21 @@ async function addComment(octokit, originalIssue, clonedIssue) {
     body: `Issue cloned to ${clonedIssue.data.html_url}`
   })
   return result;
+}
+
+async function hasComment(octokit, originalIssue) {
+  const result = await octokit.rest.issues.listComments({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: originalIssue.data.number
+  })
+
+  // check all comments for `Issue cloned to`
+  for (let comment of result.data) {
+    if (comment.body.includes('Issue cloned to')) {
+      return true;
+    }
+  }
 }
 
 function hasLabel(label, issue) {
