@@ -11,6 +11,11 @@ async function start() {
     const octokit = new github.getOctokit(ghToken);
     const originalIssue = await getOriginalIssue(octokit);
 
+    if (await hasComment(octokit, originalIssue)) {
+      console.log("Issue was already cloned. Skiping");
+      return;
+    }
+
     if (!hasLabel(sourceLabel, originalIssue)) {
       console.log(`Label ${label} not present. Will not copy issue`)
       return;
@@ -24,7 +29,6 @@ async function start() {
     core.setFailed(error.message);
   }
 }
-
 
 start();
 
@@ -46,12 +50,7 @@ async function cloneIssue(octokit, targetRepo, original, destinationLabel) {
   const splitted = targetRepo.split('/');
   const owner = splitted[0];
   const repoName = splitted[1];
-
-  if (await hasComment(octokit, original)) {
-    core.setFailed("Issue was already cloned. Skiping");
-    return;
-  }
-
+  
   const issueRegex = /(?<=^|\s)#\d+(?=\s|$)/g; // #12 as a word in the text
   let body = original.data.body.replace(issueRegex, (match) => {
     const issueNumber = match.substr(1);
