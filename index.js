@@ -98,6 +98,7 @@ async function hasComment(octokit, originalIssue) {
       return true;
     }
   }
+  return false;
 }
 
 function hasLabel(label, issue) {
